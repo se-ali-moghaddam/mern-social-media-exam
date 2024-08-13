@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "description": "It's backend project of social media MERN stack example project",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "start": "npx nodemon index.js"
   },
   "author": "Ali Moghaddam",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.2",
+    "nodemon": "^3.1.4"
   }
 }
