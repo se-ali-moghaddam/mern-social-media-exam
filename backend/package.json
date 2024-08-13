@@ -1,0 +1,13 @@
+{
+  "name": "project-backend",
+  "version": "1.0.0",
+  "description": "It's backend project of social media MERN stack example project",
+  "main": "index.js",
+  "scripts": {
+  },
+  "author": "Ali Moghaddam",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
