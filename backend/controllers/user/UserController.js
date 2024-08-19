@@ -1,7 +1,11 @@
 import User from '../../models/user/User.js';
 import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import fs from 'fs';
 import { validateMongoDbId } from '../../utils/ValidateMongoDbId.js';
+import { transporter } from '../../utils/EmailTransporter.js';
+import { cloudinaryUploadImage } from '../../utils/Cloudinary.js';
 
 export const getUsers = asyncHandler(async (req, res) => {
     res.json(await User.find({}));
@@ -171,6 +175,120 @@ export const userUnblock = asyncHandler(async (req, res) => {
         isBlocked: false
     }, {
         new: true
+    });
+
+    res.json(user);
+});
+
+export const userSendEmailMsg = asyncHandler(async (req, res) => {
+    const { from, to, subject, message } = req?.body;
+    const details = {
+        from,
+        to,
+        subject,
+        text: message
+    }
+
+    await transporter.sendMail(details);
+    res.json('Email was sent successfully !');
+});
+
+export const userSendEmailVerification = asyncHandler(async (req, res) => {
+    const user = User.findById(req?.userId);
+
+    const verificationToken = await user.createAccountVerificationToken();
+    await user.save();
+
+    const verificationMsg = `To verify your email, please click <a href='http://localhost:3000/verify-account/${verificationToken}'>here</a>`;
+
+    const details = {
+        from: process.env.SYSTEM_EMAIL_ADDR,
+        to: user.email,
+        subject: 'Email Verification',
+        html: verificationMsg
+    }
+
+    await transporter.sendMail(details, err => {
+        if(err) return res.json(err);
+
+        res.json(`An email was sent to ${user.email} , please check your email to verify your account !`);
+    });
+
+    res.json('Verification email was sent successfully !');
+});
+
+export const userAcconutVerification = asyncHandler(async (req, res) => {
+    const {token} = req?.body;
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({
+        accountVerificationToken: hashedToken,
+        accountVerificationTokenExpires: {$gt: new Date()}
+    });
+
+    if(!user) throw new Error("The verification token was expires !");
+
+    user.isAccountVerified = true;
+    user.accountVerificationToken = undefined;
+    user.accountVerificationTokenExpires = undefined;
+    await user.save();
+
+    res.json('Your account verfied successfully !');
+});
+
+export const userForgetPassword = asyncHandler(async (req, res) => {
+    const {email} = req?.email;
+    const user = await User.findOne({email});
+
+    if(!user) throw new Error('User not found :(');
+
+    const resetToken = await user.createResetPasswordToken();
+    await user.save();
+
+    const resetMsg = `To reset your password, please click <a href='http://localhost:3000/reset-password/${resetToken}'>here</a>`;
+
+    const details = {
+        from: process.env.SYSTEM_EMAIL_ADDR,
+        to: email,
+        subject: 'Reset Password',
+        html: resetMsg
+    }
+
+    await transporter.sendMail(details, err => {
+        if(err) return res.json(err);
+
+        res.json(`An email was sent to ${user.email} , please check your email to reset your password !`);
+    });
+
+    res.json('Verification email was sent successfully !');
+});
+
+export const userResetPassword = asyncHandler(async (req, res) => {
+    const {token, password} = req?.body;
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await User.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetTokenExpires: {$gt: new Date()}
+    });
+
+    if(!user) throw new Error('User not found :(');
+
+    user.password = password;
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpires = undefined;
+    await user.save();
+
+    res.json('Password was changed successfully :)');
+});
+
+export const userUploadProfilePhoto = asyncHandler(async (req, res) => {
+    const imageLocalPath = `public/images/userProfiles/${reg.file.filename}`
+    const uploadedImage = await cloudinaryUploadImage(imageLocalPath);
+    fs.unlinkSync(imageLocalPath);
+
+    const user = await User.findByIdAndUpdate(req.userId, {
+        profilePhoto: uploadedImage.url
     });
 
     res.json(user);

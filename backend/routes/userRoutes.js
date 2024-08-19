@@ -1,6 +1,7 @@
 import express from "express";
-import { getUsers, userBlock, userDelete, userDetails, userFollow, userLogin, userPasswordUpdate, userProfile, userRegister, userUnblock, userUnfollow, userUpdate } from "../controllers/user/UserController.js";
+import { getUsers, userAcconutVerification, userBlock, userDelete, userDetails, userFollow, userForgetPassword, userLogin, userPasswordUpdate, userProfile, userRegister, userResetPassword, userSendEmailMsg, userSendEmailVerification, userUnblock, userUnfollow, userUpdate, userUploadProfilePhoto } from "../controllers/user/UserController.js";
 import { verifyToken } from "../middleware/token/TokenVerification.js";
+import { photoResize, photoUpload } from "../middleware/upload/photoUpload.js";
 import { refreshToken } from "../controllers/refreshToken/RefreshTokenController.js";
 
 const router = express.Router();
@@ -8,19 +9,25 @@ const router = express.Router();
 router.get('/token', refreshToken);
 
 router.get('/api/users/', verifyToken, getUsers);
-router.get('/api/users/:id', verifyToken, userDetails);
-router.get('/api/users/profile/:id', verifyToken, userProfile);
+router.get('/api/users/:id/', verifyToken, userDetails);
+router.get('/api/users/profile/:id/', verifyToken, userProfile);
 
-router.post('/api/users/register', userRegister);
-router.post('/api/users/login', userLogin);
+router.post('/api/users/register/', userRegister);
+router.post('/api/users/login/', userLogin);
+router.post('/api/users/email/', verifyToken, userSendEmailMsg);
+router.post('/api/users/email-verification/', verifyToken, userSendEmailVerification);
 
 router.put('/api/users/', verifyToken, userUpdate);
 router.put('/api/users/password/', verifyToken, userPasswordUpdate);
 router.put('/api/users/follow/', verifyToken, userFollow);
 router.put('/api/users/unfollow/', verifyToken, userUnfollow);
-router.put('/api/users/block/:id', userBlock);
-router.put('/api/users/unblock/:id', userUnblock);
+router.put('/api/users/block/:id/', verifyToken, userBlock);
+router.put('/api/users/unblock/:id/', verifyToken, userUnblock);
+router.put('/api/users/verify-account/', verifyToken, userAcconutVerification);
+router.put('/api/users/forget-password/', userForgetPassword);
+router.put('/api/users/reset-password/', userResetPassword);
+router.put('/api/users/upload-profile-photo/', verifyToken, photoUpload.single('image'), photoResize, userUploadProfilePhoto);
 
-router.delete('/api/users/:id', verifyToken, userDelete);
+router.delete('/api/users/:id/', verifyToken, userDelete);
 
 export default router;
