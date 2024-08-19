@@ -71,7 +71,7 @@ export const userDetails = asyncHandler(async (req, res) => {
     const { id } = req?.params;
     validateMongoDbId(id);
 
-    res.json(await User.findById({ _id: id }));
+    res.json(await User.findById({ _id: id }).populate('posts'));
 });
 
 export const userProfile = asyncHandler(async (req, res) => {
@@ -287,9 +287,9 @@ export const userUploadProfilePhoto = asyncHandler(async (req, res) => {
     const uploadedImage = await cloudinaryUploadImage(imageLocalPath);
     fs.unlinkSync(imageLocalPath);
 
-    const user = await User.findByIdAndUpdate(req.userId, {
+    await User.findByIdAndUpdate(req.userId, {
         profilePhoto: uploadedImage.url
     });
 
-    res.json(user);
+    res.json('Profile was uploaded successfully :)');
 });

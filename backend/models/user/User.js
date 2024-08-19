@@ -86,6 +86,12 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
+userSchema.virtual('posts', {
+    ref: "Post",
+    foreignField: "user",
+    localField: "_id"
+});
+
 userSchema.methods.isPasswordMatched = async function (inputPassword) {
     return await bcrypt.compare(inputPassword, this.password);
 }

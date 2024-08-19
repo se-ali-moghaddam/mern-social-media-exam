@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js'
 import categoryRoutes from './routes/categoryRoutes.js'
+import postRoutes from './routes/postRoutes.js'
 import { errorHandler, notFound } from './middleware/error/errorHandler.js';
 
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use(cookieParser());
 app.use(userRoutes);
 app.use(categoryRoutes);
+app.use(postRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

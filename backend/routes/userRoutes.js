@@ -1,7 +1,7 @@
 import express from "express";
 import { getUsers, userAcconutVerification, userBlock, userDelete, userDetails, userFollow, userForgetPassword, userLogin, userPasswordUpdate, userProfile, userRegister, userResetPassword, userSendEmailMsg, userSendEmailVerification, userUnblock, userUnfollow, userUpdate, userUploadProfilePhoto } from "../controllers/user/UserController.js";
 import { verifyToken } from "../middleware/token/TokenVerification.js";
-import { photoResize, photoUpload } from "../middleware/upload/photoUpload.js";
+import { profileImageResize, photoUpload } from "../middleware/upload/photoUpload.js";
 import { refreshToken } from "../controllers/refreshToken/RefreshTokenController.js";
 
 const router = express.Router();
@@ -26,7 +26,7 @@ router.put('/api/users/unblock/:id/', verifyToken, userUnblock);
 router.put('/api/users/verify-account/', verifyToken, userAcconutVerification);
 router.put('/api/users/forget-password/', userForgetPassword);
 router.put('/api/users/reset-password/', userResetPassword);
-router.put('/api/users/upload-profile-photo/', verifyToken, photoUpload.single('image'), photoResize, userUploadProfilePhoto);
+router.put('/api/users/upload-profile-photo/', verifyToken, photoUpload.single('image'), profileImageResize, userUploadProfilePhoto);
 
 router.delete('/api/users/:id/', verifyToken, userDelete);
 

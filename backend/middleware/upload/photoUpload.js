@@ -22,7 +22,7 @@ export const photoUpload = multer({
     }
 });
 
-export const photoResize = async (req, res, next) => {
+export const profileImageResize = async (req, res, next) => {
     if(!req.file) return next();
 
     req.file.filename = `user-${Date.now()}-${req.file.originalname}`;
@@ -32,6 +32,20 @@ export const photoResize = async (req, res, next) => {
     .toFormat('jpeg')
     .jpeg({quality:90})
     .toFile(path.join(`public/images/userProfiles/${req.file.filename}`));
+
+    next();
+}
+
+export const postImageResize = async (req, res, next) => {
+    if(!req.file) return next();
+
+    req.file.filename = `user-${Date.now()}-${req.file.originalname}`;
+
+    await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({quality:90})
+    .toFile(path.join(`public/images/post-images/${req.file.filename}`));
 
     next();
 }
