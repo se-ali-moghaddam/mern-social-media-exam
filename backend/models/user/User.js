@@ -3,10 +3,22 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 const userSchema = new mongoose.Schema({
-    firstName: String,
-    lastName: String,
-    email: String,
-    password: String,
+    firstName: {
+        type: String,
+        required: [true, "This filed is required !"]
+    },
+    lastName: {
+        type: String,
+        required: [true, "This filed is required !"]
+    },
+    email: {
+        type: String,
+        required: [true, "This filed is required !"]
+    },
+    password: {
+        type: String,
+        required: [true, "This filed is required !"]
+    },
     bio: String,
     profilePhoto: {
         type: String,
