@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/api/posts/', verifyToken, getAllPosts);
 router.get('/api/posts/:id', verifyToken, getSinglePost);
-router.post('/api/post/', verifyToken, photoUpload.single("image"), postImageResize, postCreate);
+router.post('/api/posts/', verifyToken, photoUpload.single("image"), postImageResize, postCreate);
 router.put('/api/posts/:id', verifyToken, postUpdate);
 
 export default router;

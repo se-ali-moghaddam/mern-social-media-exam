@@ -4,16 +4,16 @@ const postSchema = new mongoose.Schema({
     title: {
         type: String,
         trim: true,
-        required: [true, "This field id required !"]
+        required: [true, "This field is required !"]
     },
     category: {
         type: String,
         default: 'all',
-        required: [true, "This field id required !"]
+        required: [true, "This field is required !"]
     },
     description: {
         type: String,
-        required: [true, "This field id required !"]
+        required: [true, "This field is required !"]
     },
     isLiked: {
         type: Boolean,
@@ -42,7 +42,7 @@ const postSchema = new mongoose.Schema({
     user: {
         type: mongoose.Types.ObjectId,
         ref: "User",
-        required: [true, "This field id required !"]
+        required: [true, "This field is required !"]
     },
     views: {
         type: Number,
