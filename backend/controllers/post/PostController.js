@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler';
-import Post from '../../models/post/Post.js'
+import Post from '../../models/post/Post.js';
 import fs from 'fs';
 import { cloudinaryUploadImage } from '../../utils/Cloudinary.js';
 import { validateMongoDbId } from '../../utils/ValidateMongoDbId.js';
@@ -23,6 +23,7 @@ export const postCreate = asyncHandler(async (req, res) => {
     fs.unlinkSync(imageLocalPath);
 
     await Post.create({
+        user: req.body.user,
         title: req.body.title,
         description: req.body.description,
         category: req.body.category,
@@ -36,5 +37,7 @@ export const postUpdate = asyncHandler(async (req, res) => {
     const {id} = req?.params;
     validateMongoDbId(id);
 
-    res.json(await Post.findByIdAndUpdate(id, req?.body, {new: true}));
+    await Post.findByIdAndUpdate(id, req.body, {new: true});
+
+    res.json("The post updated succesfully :)");
 });

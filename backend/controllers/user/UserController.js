@@ -194,7 +194,7 @@ export const userSendEmailMsg = asyncHandler(async (req, res) => {
 });
 
 export const userSendEmailVerification = asyncHandler(async (req, res) => {
-    const user = User.findById(req?.userId);
+    const user = await User.findById(req?.userId);
 
     const verificationToken = await user.createAccountVerificationToken();
     await user.save();
@@ -237,7 +237,7 @@ export const userAcconutVerification = asyncHandler(async (req, res) => {
 });
 
 export const userForgetPassword = asyncHandler(async (req, res) => {
-    const {email} = req?.email;
+    const {email} = req?.body;
     const user = await User.findOne({email});
 
     if(!user) throw new Error('User not found :(');
@@ -283,7 +283,7 @@ export const userResetPassword = asyncHandler(async (req, res) => {
 });
 
 export const userUploadProfilePhoto = asyncHandler(async (req, res) => {
-    const imageLocalPath = `public/images/userProfiles/${reg.file.filename}`
+    const imageLocalPath = `public/images/userProfiles/${req.file.filename}`
     const uploadedImage = await cloudinaryUploadImage(imageLocalPath);
     fs.unlinkSync(imageLocalPath);
 
