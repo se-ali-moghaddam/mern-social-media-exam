@@ -37,12 +37,7 @@ export const postUpdate = asyncHandler(async (req, res) => {
     const {id} = req?.params;
     validateMongoDbId(id);
 
-    const post = await Post.findByIdAndUpdate(id, {
-        user: req.body.user,
-        title: req.body.title,
-        description: req.body.description,
-        category: req.body.category,
-    }, {new: true});
+    await Post.findByIdAndUpdate(id, req.body, {new: true});
 
-    res.json(post);
+    res.json("The post updated succesfully :)");
 });
