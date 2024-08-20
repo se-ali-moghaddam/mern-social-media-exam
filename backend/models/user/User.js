@@ -78,7 +78,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", async function (next) {
-    if(!this.isModified("password")) next();
+    if (!this.isModified("password")) next();
 
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -96,7 +96,7 @@ userSchema.methods.isPasswordMatched = async function (inputPassword) {
     return await bcrypt.compare(inputPassword, this.password);
 }
 
-userSchema.method.createAccountVerificationToken= async function() {
+userSchema.methods.createAccountVerificationToken = async function () {
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
     this.accountVerificationToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
@@ -105,7 +105,7 @@ userSchema.method.createAccountVerificationToken= async function() {
     return verificationToken;
 }
 
-userSchema.method.createResetPasswordToken= async function() {
+userSchema.methods.createResetPasswordToken = async function () {
     const resetToken = crypto.randomBytes(32).toString("hex");
 
     this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
