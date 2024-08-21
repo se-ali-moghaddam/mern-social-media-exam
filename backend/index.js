@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js'
 import categoryRoutes from './routes/categoryRoutes.js'
 import postRoutes from './routes/postRoutes.js'
+import commentRoutes from './routes/commentRoutes.js'
 import { errorHandler, notFound } from './middleware/error/errorHandler.js';
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(cookieParser());
 app.use(userRoutes);
 app.use(categoryRoutes);
 app.use(postRoutes);
+app.use(commentRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

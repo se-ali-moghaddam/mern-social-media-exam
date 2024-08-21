@@ -9,12 +9,12 @@ export const getAllPosts = asyncHandler(async (req, res) => {
 });
 
 export const getSinglePost = asyncHandler(async (req, res) => {
-    const {id} = req?.params;
+    const { id } = req?.params;
     validateMongoDbId(id);
 
     res.json(await Post.findByIdAndUpdate(id, {
-        $inc : {views: 1}
-    }, {new : true}).populate('user'));
+        $inc: { views: 1 }
+    }, { new: true }).populate('user').populate('likes').populate('dislikes').populate('comments'));
 });
 
 export const postCreate = asyncHandler(async (req, res) => {
@@ -34,16 +34,16 @@ export const postCreate = asyncHandler(async (req, res) => {
 });
 
 export const postUpdate = asyncHandler(async (req, res) => {
-    const {id} = req?.params;
+    const { id } = req?.params;
     validateMongoDbId(id);
 
-    await Post.findByIdAndUpdate(id, req.body, {new: true});
+    await Post.findByIdAndUpdate(id, req.body, { new: true });
 
     res.json('The post updated succesfully :)');
 });
 
 export const postDelete = asyncHandler(async (req, res) => {
-    const {id} = req?.params;
+    const { id } = req?.params;
     validateMongoDbId(id);
 
     await Post.findByIdAndDelete(id);
@@ -52,29 +52,29 @@ export const postDelete = asyncHandler(async (req, res) => {
 });
 
 export const postToggleLike = asyncHandler(async (req, res) => {
-    const {id} = req?.params;
+    const { id } = req?.params;
     validateMongoDbId(id);
 
     const loginUserId = req?.userId;
     const post = await Post.findById(id);
 
-    if(post.dislikes.find(userId => userId.toString() === loginUserId.toString())){
+    if (post.dislikes.find(userId => userId.toString() === loginUserId.toString())) {
         await Post.findByIdAndUpdate(id, {
-            $pull: {dislikes: loginUserId},
+            $pull: { dislikes: loginUserId },
             isDisliked: false
         });
     }
 
-    if(post.isLiked){
+    if (post.isLiked) {
         await Post.findByIdAndUpdate(id, {
-            $pull: {likes: loginUserId},
+            $pull: { likes: loginUserId },
             isLiked: false
         });
 
         res.json('The post was unliked successfully !');
     } else {
         await Post.findByIdAndUpdate(id, {
-            $push: {likes: loginUserId},
+            $push: { likes: loginUserId },
             isLiked: true
         });
 
@@ -83,29 +83,29 @@ export const postToggleLike = asyncHandler(async (req, res) => {
 });
 
 export const postToggleDislike = asyncHandler(async (req, res) => {
-    const {id} = req?.params;
+    const { id } = req?.params;
     validateMongoDbId(id);
 
     const loginUserId = req?.userId;
     const post = await Post.findById(id);
 
-    if(post.likes.find(userId => userId.toString() === loginUserId.toString())){
+    if (post.likes.find(userId => userId.toString() === loginUserId.toString())) {
         await Post.findByIdAndUpdate(id, {
-            $pull: {likes: loginUserId},
+            $pull: { likes: loginUserId },
             isLiked: false
         });
     }
 
-    if(post.isDisliked){
+    if (post.isDisliked) {
         await Post.findByIdAndUpdate(id, {
-            $pull: {dislikes: loginUserId},
+            $pull: { dislikes: loginUserId },
             isDisliked: false
         });
 
         res.json('The post was undisliked successfully !');
     } else {
         await Post.findByIdAndUpdate(id, {
-            $push: {dislikes: loginUserId},
+            $push: { dislikes: loginUserId },
             isDisliked: true
         });
 
