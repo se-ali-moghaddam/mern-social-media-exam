@@ -71,14 +71,15 @@ export const userDetails = asyncHandler(async (req, res) => {
     const { id } = req?.params;
     validateMongoDbId(id);
 
-    res.json(await User.findById({ _id: id }).populate('posts'));
+    res.json(await User.findById(id));
 });
 
 export const userProfile = asyncHandler(async (req, res) => {
     const { id } = req?.params;
     validateMongoDbId(id);
 
-    res.json(await User.findById({ _id: id }));
+    console.log('profile');
+    res.json(await User.findById(id).populate('posts'));
 });
 
 export const userUpdate = asyncHandler(async (req, res) => {
