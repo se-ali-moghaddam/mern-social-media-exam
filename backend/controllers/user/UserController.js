@@ -60,6 +60,20 @@ export const userLogin = asyncHandler(async (req, res) => {
     throw new Error('User not found !');
 });
 
+export const userLogout = asyncHandler(async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    if(!refreshToken) return res.json('Token was not detected !');
+
+    const user = await User.findOne({refresh_token: refreshToken});
+    if(!user) return res.json('User not found !');
+
+    user.refresh_token = undefined;
+    await user.save();
+
+    res.clearCookie('refreshToken');
+    res.json('User was successfully loged out !');
+});
+
 export const userDelete = asyncHandler(async (req, res) => {
     const { id } = req?.params;
     validateMongoDbId(id);
