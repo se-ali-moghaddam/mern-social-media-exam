@@ -1,5 +1,5 @@
 import express from "express";
-import { getUsers, userAcconutVerification, userBlock, userDelete, userDetails, userFollow, userForgetPassword, userLogin, userPasswordUpdate, userProfile, userRegister, userResetPassword, userSendEmailMsg, userSendEmailVerification, userUnblock, userUnfollow, userUpdate, userUploadProfilePhoto } from "../controllers/user/UserController.js";
+import { getUsers, userAcconutVerification, userBlock, userDelete, userDetails, userFollow, userForgetPassword, userLogin, userLogout, userPasswordUpdate, userProfile, userRegister, userResetPassword, userSendEmailMsg, userSendEmailVerification, userUnblock, userUnfollow, userUpdate, userUploadProfilePhoto } from "../controllers/user/UserController.js";
 import { verifyToken } from "../middleware/token/TokenVerification.js";
 import { profileImageResize, photoUpload } from "../middleware/upload/photoUpload.js";
 import { refreshToken } from "../controllers/refreshToken/RefreshTokenController.js";
@@ -28,6 +28,7 @@ router.put('/api/users/forget-password/', userForgetPassword);
 router.put('/api/users/reset-password/', userResetPassword);
 router.put('/api/users/upload-profile-photo/', verifyToken, photoUpload.single('image'), profileImageResize, userUploadProfilePhoto);
 
+router.delete('/api/users/logout/', userLogout);
 router.delete('/api/users/:id/', verifyToken, userDelete);
 
 export default router;
