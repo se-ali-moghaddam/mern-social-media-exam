@@ -62,10 +62,10 @@ export const userLogin = asyncHandler(async (req, res) => {
 
 export const userLogout = asyncHandler(async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
-    if(!refreshToken) return res.json('Token was not detected !');
+    if (!refreshToken) return res.json('Token was not detected !');
 
-    const user = await User.findOne({refresh_token: refreshToken});
-    if(!user) return res.json('User not found !');
+    const user = await User.findOne({ refresh_token: refreshToken });
+    if (!user) return res.json('User not found !');
 
     user.refresh_token = undefined;
     await user.save();
@@ -92,8 +92,18 @@ export const userProfile = asyncHandler(async (req, res) => {
     const { id } = req?.params;
     validateMongoDbId(id);
 
-    console.log('profile');
-    res.json(await User.findById(id).populate('posts'));
+    const profile = await User.findById(id).populate('posts');
+    const viewer = req?.userId;
+
+    if (!profile.viewdBy.find(user => {
+        return user._id.toString() === viewer.toString();
+    })) {
+        await User.findByIdAndUpdate(id, {
+            $push: {viewdBy: viewer}
+        });
+    }
+
+    res.json(profile);
 });
 
 export const userUpdate = asyncHandler(async (req, res) => {
@@ -224,7 +234,7 @@ export const userSendEmailVerification = asyncHandler(async (req, res) => {
     }
 
     await transporter.sendMail(details, err => {
-        if(err) return res.json(err);
+        if (err) return res.json(err);
 
         res.json(`An email was sent to ${user.email} , please check your email to verify your account !`);
     });
@@ -233,15 +243,15 @@ export const userSendEmailVerification = asyncHandler(async (req, res) => {
 });
 
 export const userAcconutVerification = asyncHandler(async (req, res) => {
-    const {token} = req?.body;
+    const { token } = req?.body;
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     const user = await User.findOne({
         accountVerificationToken: hashedToken,
-        accountVerificationTokenExpires: {$gt: new Date()}
+        accountVerificationTokenExpires: { $gt: new Date() }
     });
 
-    if(!user) throw new Error("The verification token was expires !");
+    if (!user) throw new Error("The verification token was expires !");
 
     user.isAccountVerified = true;
     user.accountVerificationToken = undefined;
@@ -252,10 +262,10 @@ export const userAcconutVerification = asyncHandler(async (req, res) => {
 });
 
 export const userForgetPassword = asyncHandler(async (req, res) => {
-    const {email} = req?.body;
-    const user = await User.findOne({email});
+    const { email } = req?.body;
+    const user = await User.findOne({ email });
 
-    if(!user) throw new Error('User not found :(');
+    if (!user) throw new Error('User not found :(');
 
     const resetToken = await user.createResetPasswordToken();
     await user.save();
@@ -270,7 +280,7 @@ export const userForgetPassword = asyncHandler(async (req, res) => {
     }
 
     await transporter.sendMail(details, err => {
-        if(err) return res.json(err);
+        if (err) return res.json(err);
 
         res.json(`An email was sent to ${user.email} , please check your email to reset your password !`);
     });
@@ -279,15 +289,15 @@ export const userForgetPassword = asyncHandler(async (req, res) => {
 });
 
 export const userResetPassword = asyncHandler(async (req, res) => {
-    const {token, password} = req?.body;
+    const { token, password } = req?.body;
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
     const user = await User.findOne({
         passwordResetToken: hashedToken,
-        passwordResetTokenExpires: {$gt: new Date()}
+        passwordResetTokenExpires: { $gt: new Date() }
     });
 
-    if(!user) throw new Error('User not found :(');
+    if (!user) throw new Error('User not found :(');
 
     user.password = password;
     user.passwordResetToken = undefined;
