@@ -72,9 +72,15 @@ const userSchema = new mongoose.Schema({
     passwordResetTokenExpires: Date,
     refresh_token: String
 }, {
-    toJSON: true,
-    toObject: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
     timestamps: true
+});
+
+userSchema.virtual('posts', {
+    ref: 'Post',
+    foreignField: 'user',
+    localField: '_id'
 });
 
 userSchema.pre("save", async function (next) {
@@ -84,12 +90,6 @@ userSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
 
     next();
-});
-
-userSchema.virtual('posts', {
-    ref: "Post",
-    foreignField: "user",
-    localField: "_id"
 });
 
 userSchema.methods.isPasswordMatched = async function (inputPassword) {
