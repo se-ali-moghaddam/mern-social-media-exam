@@ -53,9 +53,19 @@ const postSchema = new mongoose.Schema({
         default: "https://static.vecteezy.com/system/resources/thumbnails/007/746/382/small/drag-and-drop-add-document-file-button-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg"
     }
 }, {
-    toJSON: true,
-    toObject: true,
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    },
     timestamps: true
+});
+
+postSchema.virtual('comments', {
+    ref: 'Comment',
+    foreignField: 'post',
+    localField: '_id'
 });
 
 export default mongoose.model("Post", postSchema);
