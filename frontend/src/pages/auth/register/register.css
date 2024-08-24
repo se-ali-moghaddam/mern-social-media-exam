@@ -1,0 +1,16 @@
+.register-container{
+    position: relative;
+    left: auto;
+    right: auto;
+    padding: 5% 1%;
+}
+
+.form{
+    padding: 5%;
+    background-color: rgba(48, 48, 48, 0.384);
+}
+
+.content{
+    text-align: center;
+    padding: 10%;
+}

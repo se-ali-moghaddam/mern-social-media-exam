@@ -1,6 +1,9 @@
 import React from 'react';
-import Navbar from '../../../components/navbar/Navbar'
+import Navbar from '../../../components/navbar/Navbar';
 import RegisterForm from '../../../components/forms/RegisterForm';
+import {useFormik} from 'formik';
+import * as Yup from 'yup';
+import './register.css';
 
 const Register = () => {
   return (
