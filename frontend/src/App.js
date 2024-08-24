@@ -1,11 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import Register from "./pages/auth/register/Register";
 
 function App() {
   return (
-    <div className="App">
-     
-    </div>
+    <>
+      <Routes>
+        <Route path="/register" element={<Register/>} />
+      </Routes>
+    </>
   );
 }
 
