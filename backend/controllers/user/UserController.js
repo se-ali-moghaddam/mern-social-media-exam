@@ -53,7 +53,10 @@ export const userLogin = asyncHandler(async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000
         });
 
-        return res.json(accessToken);
+        return res.json({
+            userViewModel,
+            accessToken
+        });
     }
 
     res.status(401);

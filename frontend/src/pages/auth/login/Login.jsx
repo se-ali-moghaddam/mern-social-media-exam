@@ -1,9 +1,9 @@
-import React from 'react';
-import Navbar from '../../../components/navbar/Navbar';
-import RegisterForm from '../../../components/forms/RegisterForm';
+import React, { useContext } from 'react'
 import '../auth.css';
+import LoginForm from '../../../components/forms/LoginForm';
+import Navbar from '../../../components/navbar/Navbar';
 
-const Register = () => {
+const Login = () => {
   return (
     <div className='container'>
       <Navbar />
@@ -14,10 +14,10 @@ const Register = () => {
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Id, quibusdam quos officia recusandae at nihil veritatis magni exercitationem, deleniti ea expedita possimus magnam vero nemo.
           </p>
         </div>
-        <RegisterForm />
+        <LoginForm />
       </div>
     </div>
   )
 }
 
-export default Register
+export default Login

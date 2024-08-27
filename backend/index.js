@@ -7,6 +7,7 @@ import categoryRoutes from './routes/categoryRoutes.js'
 import postRoutes from './routes/postRoutes.js'
 import commentRoutes from './routes/commentRoutes.js'
 import { errorHandler, notFound } from './middleware/error/errorHandler.js';
+import cors from 'cors';
 
 dotenv.config();
 dbConnect();
@@ -16,6 +17,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json())
 app.use(cookieParser());
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(userRoutes);
 app.use(categoryRoutes);
 app.use(postRoutes);
