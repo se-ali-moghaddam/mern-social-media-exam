@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { AuthContext } from '../../context/AuthContext';
+import { AiOutlineUpload } from "react-icons/ai";
 
 function Navbar() {
+    const { userId, profilePhoto } = useContext(AuthContext);
+
     return (
         <nav className="navbar" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
@@ -11,6 +15,18 @@ function Navbar() {
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 110L10 40L50 0L100 50L70 80L110 120L50 160L0 110Z" fill="#00D1B2" />
                     </svg>
                 </Link>
+                {
+                    userId ?
+                        <div className='buttons'>
+                            <Link className='button is-info is-flex is-align-items-center ml-3' to="/submit-post">
+                                Submit Post
+                                <AiOutlineUpload />
+                            </Link>
+                        </div>
+                        :
+                        <>
+                        </>
+                }
 
                 <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
                     <span aria-hidden="true"></span>
@@ -24,12 +40,46 @@ function Navbar() {
                 <div className="navbar-end">
                     <div className="navbar-item">
                         <div className="buttons">
-                            <Link className="button is-primary" to="/register">
-                                <strong>Sign up</strong>
-                            </Link>
-                            <Link className="button is-light" to="/Login">
-                                Log in
-                            </Link>
+                            {
+                                userId ?
+                                    <>
+                                        <Link className="button is-primary" to="/">
+                                            <strong>Home</strong>
+                                        </Link>
+                                        <Link className="button is-light" to="/create-category">
+                                            Add category
+                                        </Link>
+                                        <Link className="button is-light" to="/users">
+                                            Users
+                                        </Link>
+
+                                        <div className="dropdown is-active">
+                                            <div className="dropdown-trigger">
+                                                <button aria-haspopup="true" aria-controls="dropdown-menu">
+                                                    <img src={profilePhoto} alt="User Profile Photo" className="img-profile" />
+                                                </button>
+                                            </div>
+                                            <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                                                <div className="dropdown-content">
+                                                    <Link to='/profile' className="dropdown-item"> Profile </Link>
+                                                    <hr className="dropdown-divider" />
+                                                    <Link to="/Logout" className="dropdown-item">
+                                                        Log out
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                    :
+                                    <>
+                                        <Link className="button is-primary" to="/register">
+                                            <strong>Sign up</strong>
+                                        </Link>
+                                        <Link className="button is-light" to="/Login">
+                                            Log in
+                                        </Link>
+                                    </>
+                            }
                         </div>
                     </div>
                 </div>

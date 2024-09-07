@@ -1,34 +1,42 @@
-import React, { useContext } from 'react';
+import React, { useContext } from 'react'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { AuthContext } from '../../context/AuthContext';
+import { useLocation } from 'react-router-dom';
+import { AuthContext } from '../../../context/AuthContext';
 
 const formSchema = Yup.object({
     firstName: Yup.string().required('This filed is required').max(25, 'Too large, input vlaue is greater than 25'),
     lastName: Yup.string().required('This filed is required').max(25, 'Too large, input vlaue is greater than 25'),
     email: Yup.string().email().required('This filed is required').max(110, 'Too large, input vlaue is greater than 110'),
-    password: Yup.string().required('This filed is required').min(8, 'Too small, input vlaue is less than 8')
-        .max(24, 'Too large, input vlaue is greater than 24'),
+    bio: Yup.string().required('This filed is required'),
 });
 
-const RegisterForm = () => {
-    const {register, registerError} = useContext(AuthContext);
-    
+const UpdateProfile = () => {
+    const {state} = useLocation();
+    const {updateUser} = useContext(AuthContext);
+
     const formik = useFormik({
         initialValues: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            password: ''
+            firstName: state.firstName,
+            lastName: state.lastName,
+            email: state.email,
+            bio: ''
         },
-        onSubmit: (vlaues) => {
-            register(vlaues);
+        onSubmit: (values) => {
+            const data = {
+                firstName: values.firstName,
+                lastName: values.lastName,
+                email: values.email,
+                bio: values.bio
+            }
+            
+            updateUser(data);
         },
         validationSchema: formSchema
     });
 
     return (
-        <form className="form" onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
             <div className="field">
                 <label className="label">First Name</label>
                 <div className="control">
@@ -37,7 +45,7 @@ const RegisterForm = () => {
                         name="firstName"
                         type="text"
                         placeholder="John"
-                        value={formik.values.firstName}
+                        defaultValue={state.firstName}
                         onChange={formik.handleChange("firstName")}
                         onBlur={formik.handleBlur("firstName")}
                     />
@@ -53,7 +61,7 @@ const RegisterForm = () => {
                         name="lastName"
                         type="text"
                         placeholder="Doe"
-                        value={formik.values.lastName}
+                        defaultValue={state.lastName}
                         onChange={formik.handleChange("lastName")}
                         onBlur={formik.handleBlur("lastName")}
                     />
@@ -75,7 +83,7 @@ const RegisterForm = () => {
                         name="email"
                         type="email"
                         placeholder="Email input"
-                        value={formik.values.email}
+                        defaultValue={state.email}
                         onChange={formik.handleChange("email")}
                         onBlur={formik.handleBlur("email")}
                     />
@@ -87,21 +95,19 @@ const RegisterForm = () => {
                     </span>
                 </div>
                 <p className="help is-danger">{formik.touched.email && formik.errors.email}</p>
-                <p className="help is-danger">{registerError}</p>
             </div>
 
             <div className="field">
-                <label className="label">Password</label>
+                <label className="label">Bio</label>
                 <div className="control has-icons-left has-icons-right">
-                    <input
-                        className="input"
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange("password")}
-                        onBlur={formik.handleBlur("password")}
-                    />
+                    <textarea
+                        className="textarea"
+                        name="bio"
+                        placeholder="Discuss about yourself"
+                        value={formik.values.bio}
+                        onChange={formik.handleChange("bio")}
+                        onBlur={formik.handleBlur("bio")}
+                    ></textarea>
                     <span className="icon is-small is-left">
                         <i className="fas fa-user"></i>
                     </span>
@@ -112,18 +118,9 @@ const RegisterForm = () => {
                 <p className="help is-danger">{formik.touched.password && formik.errors.password}</p>
             </div>
 
-            <div className="field">
-                <div className="control">
-                    <label className="checkbox">
-                        <input type="checkbox" />
-                        I agree to the <a href="#">terms and conditions</a>
-                    </label>
-                </div>
-            </div>
-
-            <input type="submit" className="is-12 button is-link" value="Sign-Up" />
+            <input type="submit" className="is-12 button is-link" value="Submit" />
         </form>
     )
 }
 
-export default RegisterForm
+export default UpdateProfile

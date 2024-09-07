@@ -95,7 +95,12 @@ export const userProfile = asyncHandler(async (req, res) => {
     const { id } = req?.params;
     validateMongoDbId(id);
 
-    const profile = await User.findById(id).populate('posts');
+    const profile = await User.findById(id)
+        .populate('posts')
+        .populate('viewdBy')
+        .populate('following')
+        .populate('followers');
+        
     const viewer = req?.userId;
 
     if (!profile.viewdBy.find(user => {
@@ -164,7 +169,7 @@ export const userFollow = asyncHandler(async (req, res) => {
 
 export const userUnfollow = asyncHandler(async (req, res) => {
     const unfollowerId = req?.userId;
-    const unfollowingId = req?.body?.followingId;
+    const unfollowingId = req?.body?.unfollowingId;
 
     await User.findByIdAndUpdate(unfollowingId, {
         $pull: { followers: unfollowerId },

@@ -1,0 +1,15 @@
+.post-editor-right {
+    width: 60%;
+}
+
+.post-editor-left {
+    width: 40%;
+}
+
+.textarea{
+    height: 250px;
+}
+
+.single-post-title{
+    color: rgb(194, 168, 0) !important;
+}

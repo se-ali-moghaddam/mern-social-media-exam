@@ -26,8 +26,8 @@ export const categoryUpdate = asyncHandler(async (req, res) => {
     const { id } = req?.params;
 
     await Category.findByIdAndUpdate(id, { 
-        title : req?.body
-    }, { new: true }).populate('user');
+        title : req?.body?.title
+    }, { new: true });
 
     res.json("The category modified seccessfully !");
 });

@@ -7,6 +7,9 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContextProvider } from './context/AuthContext';
 import axios from 'axios';
+import { PostContextProvider } from './context/PostContext';
+import { CategoryContextProvider } from './context/CategoryContext';
+import { CommentContextProvider } from './context/CommentContext';
 
 axios.defaults.withCredentials = true;
 
@@ -15,7 +18,13 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthContextProvider>
-        <App/>
+        <CategoryContextProvider>
+          <PostContextProvider>
+            <CommentContextProvider>
+              <App />
+            </CommentContextProvider>
+          </PostContextProvider>
+        </CategoryContextProvider>
       </AuthContextProvider>
     </BrowserRouter>
   </React.StrictMode>
