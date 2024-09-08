@@ -17,6 +17,7 @@ export const AuthContextProvider = ({ children }) => {
     const [userData, setUserData] = useState(undefined);
     const [userEmail, setUserEmail] = useState(undefined);
     const [users, setUsers] = useState([]);
+    const [topUsers, setTopUsers] = useState([]);
 
     const navigate = useNavigate();
 
@@ -35,7 +36,7 @@ export const AuthContextProvider = ({ children }) => {
             setTokenExpires(decodedToken.exp);
             setProfilePhoto(decodedToken.profilePhoto);
 
-            // navigate('/');
+            navigate('/');
         } catch (error) {
             console.log(error);
             navigate('/login', { replace: true });
@@ -298,15 +299,108 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            // console.log(res.data);
             setUsers(res.data);
         } catch (error) {
             console.log(error);
         }
     }
 
+    const getTopUsers = async () => {
+        try {
+            const res = await axiosJWT.get(`${baseUrl}/api/top-users`, {
+                headers: {
+                    authorization: `Bearer ${accessToken}`
+                }
+            });
+
+            setTopUsers(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const blockUser = async (id) => {
+        try {
+            const res = await axiosJWT.put(`${baseUrl}/api/users/block/${id}`, {
+                headers: {
+                    authorization: `Bearer ${accessToken}`
+                }
+            });
+
+            toast(res.data, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: "dark"
+            });
+
+            getUsers();
+        } catch (error) {
+            console.log(error);            
+        }
+    }
+
+    const unblockUser = async (id) => {
+        try {
+            const res = await axiosJWT.put(`${baseUrl}/api/users/unblock/${id}`, {
+                headers: {
+                    authorization: `Bearer ${accessToken}`
+                }
+            });
+
+            // toast(res.data, {
+            //     position: "bottom-right",
+            //     autoClose: 5000,
+            //     hideProgressBar: false,
+            //     closeOnClick: true,
+            //     pauseOnHover: true,
+            //     theme: "dark"
+            // });
+
+            getUsers();
+        } catch (error) {
+            console.log(error);            
+        }
+    }
+
+    const updatePassword = async (data) => {
+        try {
+            const res = await axiosJWT.put(`${baseUrl}/api/users/password`, data, {
+                headers: {
+                    authorization: `Bearer ${accessToken}`
+                }
+            });
+
+            toast(res.data, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: "dark"
+            });
+
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const userLogout = async () => {
+        try {
+            await axios.delete(`${baseUrl}/api/users/logout`);
+            setUserId('');
+            
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{ register, registerError, login, loginError, userId, profilePhoto, axiosJWT, accessToken, profile, userData, userEmail, userProfile, uploadProfilePhoto, updateUser, follow, unfollow, sendEmail, verifyAccount, sendVerificationEmail, getUsers, users }}>
+        <AuthContext.Provider value={{ register, registerError, login, loginError, userId, profilePhoto, axiosJWT, accessToken, profile, userData, userEmail, userProfile, uploadProfilePhoto, updateUser, follow, unfollow, sendEmail, verifyAccount, sendVerificationEmail, getUsers, users, getTopUsers, topUsers, blockUser, unblockUser, updatePassword, userLogout }}>
             {children}
         </AuthContext.Provider>
     );

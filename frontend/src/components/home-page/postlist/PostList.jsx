@@ -17,7 +17,7 @@ const PostList = () => {
       {
         posts?.map(post => {
           return (
-            <div className="box">
+            <div className="box has-background-dark">
               <article className='media'>
                 <div className="media-left">
                   <Link to={`/profile/${post.user._id}`} state={post.user} className="image is-64x64">

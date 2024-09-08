@@ -16,6 +16,7 @@ import Following from "./pages/auth/profile/Following";
 import SendEmail from "./pages/auth/profile/SendEmail";
 import VerifyAccount from "./pages/auth/profile/VerifyAccount";
 import Users from "./pages/users/Users";
+import ChangePassword from "./pages/users/ChangePassword";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/" element={<HomeScreen />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/users" element={<Users />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/edit/" element={<UpdateProfile />} />

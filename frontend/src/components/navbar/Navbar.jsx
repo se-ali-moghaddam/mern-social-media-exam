@@ -4,7 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { AiOutlineUpload } from "react-icons/ai";
 
 function Navbar() {
-    const { userId, profilePhoto } = useContext(AuthContext);
+    const { userId, profilePhoto, userLogout } = useContext(AuthContext);
 
     return (
         <nav className="navbar" role="navigation" aria-label="main navigation">
@@ -62,10 +62,11 @@ function Navbar() {
                                             <div className="dropdown-menu" id="dropdown-menu" role="menu">
                                                 <div className="dropdown-content">
                                                     <Link to='/profile' className="dropdown-item"> Profile </Link>
+                                                    <Link to='/change-password' className="dropdown-item"> Change Password </Link>
                                                     <hr className="dropdown-divider" />
-                                                    <Link to="/Logout" className="dropdown-item">
+                                                    <span to="/Logout" className="dropdown-item button" onClick={() => userLogout()}>
                                                         Log out
-                                                    </Link>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>

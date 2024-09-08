@@ -5,6 +5,8 @@ import { CategoryContext } from '../../context/CategoryContext';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { PostContext } from '../../context/PostContext';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const formSchema = Yup.object({
     title: Yup.string().required('This filed is required').max(66, 'Too large, input vlaue is greater than 66'),
@@ -77,14 +79,14 @@ const AddPost = () => {
                                 <div className="field mt-5">
                                     <div className="control">
                                         <label className='label'>Post Text</label>
-                                        <textarea
-                                            className='textarea'
+                                        <ReactQuill
+                                            theme='snow'
                                             name="post-text"
                                             placeholder='Post body ...'
                                             value={formik.values.description}
                                             onChange={formik.handleChange('description')}
                                             onBlur={formik.handleChange('description')}
-                                        ></textarea>
+                                        />
                                         <p className="help is-danger">{formik.touched.description && formik.errors.description}</p>
                                     </div>
                                 </div>

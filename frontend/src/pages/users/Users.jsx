@@ -4,7 +4,7 @@ import Navbar from '../../components/navbar/Navbar'
 import { AuthContext } from '../../context/AuthContext'
 
 const Users = () => {
-    const { getUsers, users } = useContext(AuthContext);
+    const { getUsers, users, blockUser, unblockUser } = useContext(AuthContext);
 
     useEffect(() => {
         getUsers();
@@ -46,7 +46,12 @@ const Users = () => {
                                                 <Link to={`/profile/${user._id}`} className="button is-info" state={user}>Profile</Link>
                                             </td>
                                             <td>
-                                                <Link className="button is-danger">Block</Link>
+                                                {
+                                                    user.isBlocked ? 
+                                                    <Link className="button is-success" onClick={() => unblockUser(user._id)}>Unblock</Link>
+                                                    :
+                                                    <Link className="button is-danger" onClick={() => blockUser(user._id)}>Block</Link>
+                                                }
                                             </td>
                                         </tr>
                                     )

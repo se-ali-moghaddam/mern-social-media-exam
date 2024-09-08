@@ -30,6 +30,15 @@ export const CommentContextProvider = ({ children }) => {
             postDetails(data.post);
         } catch (error) {
             console.log(error);
+
+            toast(error.response.data.message, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: "dark"
+            });
         }
     }
 

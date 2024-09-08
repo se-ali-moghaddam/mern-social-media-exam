@@ -1,11 +1,18 @@
 import asyncHandler from 'express-async-handler';
 import Post from '../../models/post/Post.js';
 import fs from 'fs';
+import User from '../../models/user/User.js';
 import { cloudinaryUploadImage } from '../../utils/Cloudinary.js';
 import { validateMongoDbId } from '../../utils/ValidateMongoDbId.js';
+import { checkIsBlocked } from '../../utils/UserBlockCheck.js';
+import { checkIsVerified } from '../../utils/UserVerificationCheck.js';
 
 export const getAllPosts = asyncHandler(async (req, res) => {
-    res.json(await Post.find({}).populate('user'));
+    res.json(await Post.find({}).sort("-createdAt").populate('user'));
+});
+
+export const getTopPosts = asyncHandler(async (req, res) => {
+    res.json(await Post.find({}).sort("-views").limit(10).populate('user'));
 });
 
 export const getSinglePost = asyncHandler(async (req, res) => {
@@ -14,16 +21,23 @@ export const getSinglePost = asyncHandler(async (req, res) => {
 
     res.json(await Post.findByIdAndUpdate(id, {
         $inc: { views: 1 }
-    }, { new: true }).populate('user').populate('likes').populate('dislikes').populate('comments'));
+    }, { new: true }).populate('user').populate('likes').populate('dislikes').populate({
+        path: 'comments',
+        populate: {path: 'user'}
+    }));
 });
 
 export const postCreate = asyncHandler(async (req, res) => {
+    const { user } = req?.body;
+    checkIsBlocked(await User.findById(user));
+    checkIsVerified(await User.findById(user));
+
     const imageLocalPath = `public/images/post-images/${req.file.filename}`;
     const uploadedImage = await cloudinaryUploadImage(imageLocalPath);
     fs.unlinkSync(imageLocalPath);
 
     await Post.create({
-        user: req.body.user,
+        user: user,
         title: req.body.title,
         description: req.body.description,
         category: req.body.category,

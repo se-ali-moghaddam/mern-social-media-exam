@@ -11,6 +11,10 @@ export const getUsers = asyncHandler(async (req, res) => {
     res.json(await User.find({}));
 });
 
+export const getTopUsers = asyncHandler(async (req, res) => {
+    res.json(await User.find({}).sort("-followers").limit(10));
+});
+
 export const userRegister = asyncHandler(async (req, res) => {
     const { firstName, lastName, email, password } = req?.body;
 

@@ -16,7 +16,7 @@ const Profile = () => {
     }, []);
 
     const editImageRef = useRef(null);
-    
+
     const handleClick = () => {
         editImageRef?.current?.click();
     }
@@ -38,9 +38,9 @@ const Profile = () => {
                                     alt="User Image "
                                     onClick={handleClick}
                                 />
-                                <AiFillEdit className='has-text-info is-link' onClick={handleClick}/>
+                                <AiFillEdit className='has-text-info is-link' onClick={handleClick} />
                             </figure>
-                            <input type="file" hidden ref={editImageRef} onChange={handleChange}/>
+                            <input type="file" hidden ref={editImageRef} onChange={handleChange} />
                         </div>
                         <div className="media-content">
                             <p className="title is-4">{userData.firstName} {userData.lastName}</p>

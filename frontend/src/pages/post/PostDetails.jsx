@@ -8,9 +8,11 @@ import moment from 'jalali-moment';
 import AddComment from '../../components/posts/post-details/AddComment';
 import ShowComment from '../../components/posts/post-details/ShowComment';
 import { useState } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
 const PostDetails = () => {
     const { postDetails, singlePost, deletePost } = useContext(PostContext);
+    const {userId} = useContext(AuthContext);
     const [addComment, setAddComment] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const { id } = useParams();
@@ -18,6 +20,8 @@ const PostDetails = () => {
     useEffect(() => {
         postDetails(id);
     }, []);
+
+    console.log(singlePost);
 
     return (
         <div className='container'>
@@ -48,10 +52,14 @@ const PostDetails = () => {
                                 </div>
                             </div>
                         </strong>
-                        <div className="edit-post mt-3 mb-3">
-                            <Link className='is-size-3 has-text-warning pr-3' to={`/edit-post/${singlePost._id}`} state={singlePost}><AiFillEdit /></Link>
-                            <span className='is-size-3 has-text-danger is-clickable' onClick={() => deletePost(singlePost._id)}><AiFillDelete /></span>
-                        </div>
+                        {
+                            singlePost.user._id === userId ?
+                                <div className="edit-post mt-3 mb-3">
+                                    <Link className='is-size-3 has-text-warning pr-3' to={`/edit-post/${singlePost._id}`} state={singlePost}><AiFillEdit /></Link>
+                                    <span className='is-size-3 has-text-danger is-clickable' onClick={() => deletePost(singlePost._id)}><AiFillDelete /></span>
+                                </div>
+                            : ''
+                        }
                     </div>
                     <div className="description">
                         <p className="is-size-5">{singlePost.description}</p>

@@ -10,6 +10,7 @@ export const PostContextProvider = ({ children }) => {
     const { userId, axiosJWT, accessToken } = useContext(AuthContext);
     const [posts, setPosts] = useState([]);
     const [singlePost, setSinglePost] = useState([]);
+    const [topPosts, setTopPosts] = useState([])
     const navigate = useNavigate();
 
     const CreatePost = async (data) => {
@@ -39,6 +40,15 @@ export const PostContextProvider = ({ children }) => {
             navigate('/');
         } catch (error) {
             console.log(error);
+
+            toast(error.response.data.message, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: "dark"
+            });
         }
     }
 
@@ -51,6 +61,20 @@ export const PostContextProvider = ({ children }) => {
             });
 
             setPosts(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getTopPosts = async () => {
+        try {
+            const res = await axiosJWT.get(`${baseUrl}/api/top-posts`, {
+                headers: {
+                    authorization: `Bearer ${accessToken}`
+                }
+            });
+
+            setTopPosts(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -145,7 +169,7 @@ export const PostContextProvider = ({ children }) => {
     }
 
     return (
-        <PostContext.Provider value={{ CreatePost, getPosts, posts, postDetails, singlePost, updatePost, deletePost, likePost, dislikePost }}>
+        <PostContext.Provider value={{ CreatePost, getPosts, posts, getTopPosts, topPosts, postDetails, singlePost, updatePost, deletePost, likePost, dislikePost }}>
             {children}
         </PostContext.Provider>
     );
