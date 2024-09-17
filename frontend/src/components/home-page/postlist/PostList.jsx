@@ -6,12 +6,11 @@ import { Link } from 'react-router-dom';
 
 const PostList = () => {
   const { posts, getPosts, likePost, dislikePost } = useContext(PostContext);
-
+  
   useEffect(() => {
     getPosts();
   }, []);
 
-  console.log(posts);
   return (
     <div className='container'>
       {

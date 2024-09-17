@@ -8,12 +8,12 @@ import { PostContext } from '../../../context/PostContext';
 import { AiFillEdit } from "react-icons/ai";
 
 const Profile = () => {
-    const { profile, userData, uploadProfilePhoto, sendVerificationEmail } = useContext(AuthContext);
+    const { profile, userData, uploadProfilePhoto, sendVerificationEmail, userId, deleteAccount } = useContext(AuthContext);
     const { likePost, dislikePost } = useContext(PostContext);
 
     useEffect(() => {
-        profile();
-    }, []);
+        profile(userId);
+    }, [userId]);
 
     const editImageRef = useRef(null);
 
@@ -24,7 +24,6 @@ const Profile = () => {
         uploadProfilePhoto(e.target.files[0]);
     }
 
-    console.log(userData);
     return (
         <div className='container'>
             <Navbar />
@@ -34,7 +33,7 @@ const Profile = () => {
                         <div className="media-left">
                             <figure className="image is-64x64">
                                 <img
-                                    src={userData.profilePhoto}
+                                    src={userData?.profilePhoto}
                                     alt="User Image "
                                     onClick={handleClick}
                                 />
@@ -43,32 +42,33 @@ const Profile = () => {
                             <input type="file" hidden ref={editImageRef} onChange={handleChange} />
                         </div>
                         <div className="media-content">
-                            <p className="title is-4">{userData.firstName} {userData.lastName}</p>
-                            <div className="follow-box mt-2">
-                                <Link className='button is-warning' to='/profile/edit' state={userData}>Edit Profile</Link>
+                            <p className="title is-4">{userData?.firstName} {userData?.lastName}</p>
+                            <div className="action-box mt-2">
+                                <Link className='button is-warning mr-3' to='/profile/edit' state={userData}>Edit Profile</Link>
+                                <button className='button is-danger' onClick={() => deleteAccount(userId)}>Delete Account</button>
                             </div>
                             {
-                                !userData.isAccountVerified ?
+                                !userData?.isAccountVerified ?
                                     <p className="subtitle is-6 has-text-danger mt-5">Account is not verified ! "Click <Link onClick={() => sendVerificationEmail()} >Here</Link> to verification"</p>
                                     : <p className="subtitle is-6 has-text-success mt-5">Account is verified</p>
                             }
                         </div>
                         <div className="informations">
-                            <Link to='/profile/followers' state={userData.followers} className="followers mr-3 has-text-white">
-                                Followers : {userData.followers.length}
+                            <Link to='/profile/followers' state={userData?.followers} className="followers mr-3 has-text-white">
+                                Followers : {userData?.followers.length}
                             </Link>
-                            <Link to='/profile/following' state={userData.following} className="followings mr-3 has-text-white">
-                                Followings : {userData.following.length}
+                            <Link to='/profile/following' state={userData?.following} className="followings mr-3 has-text-white">
+                                Followings : {userData?.following.length}
                             </Link>
                             <span className="posts mr-3 has-text-white">
-                                Posts : {userData.posts.length}
+                                Posts : {userData?.posts.length}
                             </span>
                         </div>
                     </div>
 
-                    {userData.bio && (
+                    {userData?.bio && (
                         <div className="content">
-                            {userData.bio}
+                            {userData?.bio}
                         </div>
                     )}
                 </div>
@@ -119,13 +119,13 @@ const Profile = () => {
                                                     <div className="media-left">
                                                         <figure className="image is-48x48">
                                                             <img
-                                                                src={userData.profilePhoto}
+                                                                src={userData?.profilePhoto}
                                                                 alt="user image"
                                                             />
                                                         </figure>
                                                     </div>
                                                     <div className="media-content">
-                                                        <p className="title is-4">{userData.firstName} {userData.lastName}</p>
+                                                        <p className="title is-4">{userData?.firstName} {userData?.lastName}</p>
                                                         <p className="subtitle is-6">{moment(post.createdAt).format('YYYY/MM/DD')}</p>
                                                     </div>
                                                 </div>

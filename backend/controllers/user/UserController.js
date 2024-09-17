@@ -6,6 +6,8 @@ import fs from 'fs';
 import { validateMongoDbId } from '../../utils/ValidateMongoDbId.js';
 import { transporter } from '../../utils/EmailTransporter.js';
 import { cloudinaryUploadImage } from '../../utils/Cloudinary.js';
+import Post from '../../models/post/Post.js';
+import Comment from '../../models/comment/Comment.js';
 
 export const getUsers = asyncHandler(async (req, res) => {
     res.json(await User.find({}));
@@ -27,6 +29,16 @@ export const userRegister = asyncHandler(async (req, res) => {
     });
 
     res.json('User registerred successfully :)');
+});
+
+export const checkEmailExistance = asyncHandler(async (req, res) => {
+    const { email } = req?.params;
+
+    if (await User.findOne({ email })) {
+        res.json(true);
+    } else {
+        res.json(false);
+    }
 });
 
 export const userLogin = asyncHandler(async (req, res) => {
@@ -85,7 +97,12 @@ export const userDelete = asyncHandler(async (req, res) => {
     const { id } = req?.params;
     validateMongoDbId(id);
 
-    res.json(await User.findByIdAndDelete({ _id: id }));
+    await Comment.deleteMany({ user: id });
+    await Post.deleteMany({ user: id });
+    await User.findByIdAndDelete({ _id: id });
+
+    res.clearCookie('refreshToken');
+    res.json('Your account was successfully deleted !');
 });
 
 export const userDetails = asyncHandler(async (req, res) => {
@@ -104,14 +121,14 @@ export const userProfile = asyncHandler(async (req, res) => {
         .populate('viewdBy')
         .populate('following')
         .populate('followers');
-        
+
     const viewer = req?.userId;
 
     if (!profile.viewdBy.find(user => {
         return user._id.toString() === viewer.toString();
     })) {
         await User.findByIdAndUpdate(id, {
-            $push: {viewdBy: viewer}
+            $push: { viewdBy: viewer }
         });
     }
 
@@ -169,6 +186,20 @@ export const userFollow = asyncHandler(async (req, res) => {
     });
 
     res.json('User followed :)');
+});
+
+export const checkIsFollowed = asyncHandler(async (req, res) => {
+    const followerId = req?.userId;
+    const { followingId } = req?.params;
+    const followingUser = await User.findById(followingId);
+
+    const isFollowed = followingUser?.followers?.find((user) =>
+        user.toString() === followerId.toString()
+    );
+
+    if (isFollowed) return res.json(true);
+
+    return res.json(false);
 });
 
 export const userUnfollow = asyncHandler(async (req, res) => {

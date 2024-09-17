@@ -8,14 +8,14 @@ import { PostContext } from '../../../context/PostContext';
 
 const UserProfile = () => {
     const { state } = useLocation();
-    const { userProfile, userData, userId, follow, unfollow } = useContext(AuthContext);
+    const { userProfile, userData, userId, follow, unfollow, checkIsFollowed, isFollowed } = useContext(AuthContext);
     const { likePost, dislikePost } = useContext(PostContext);
 
     useEffect(() => {
+        checkIsFollowed(state._id);
         userProfile(state._id);
-    }, []);
+    }, [userId]);
 
-    console.log(state);
     return (
         <div className='container'>
             <Navbar />
@@ -25,26 +25,26 @@ const UserProfile = () => {
                         <div className="media-left">
                             <figure className="image is-64x64">
                                 <img
-                                    src={userData.profilePhoto}
+                                    src={userData?.profilePhoto}
                                     alt="User Image"
                                 />
                             </figure>
                         </div>
                         <div className="media-content">
-                            <p className="title is-4">{userData.firstName} {userData.lastName}</p>
+                            <p className="title is-4">{userData?.firstName} {userData?.lastName}</p>
                             {
-                                !userData.isAccountVerified ?
+                                !userData?.isAccountVerified ?
                                     <p className="subtitle is-6 has-text-danger mt-5">Account is not verified !</p>
                                     : <p className="subtitle is-6 has-text-success mt-5">Account is verified</p>
                             }
                             {
-                                userId !== userData._id ? (
+                                userId !== userData?._id ? (
                                     <div className="follow-box mt-2">
                                         {
-                                            !userData.isFollowing ? (
-                                                <button className='button is-success mr-2' onClick={() => follow(userData._id)}>Follow</button>
+                                            isFollowed ? (
+                                                <button className='button is-danger' onClick={() => unfollow(userData?._id)}>Unfollow</button>
                                             ) : (
-                                                <button className='button is-danger' onClick={() => unfollow(userData._id)}>Unfollow</button>
+                                                <button className='button is-success mr-2' onClick={() => follow(userData?._id)}>Follow</button>
                                             )
                                         }
                                     </div>
@@ -53,20 +53,20 @@ const UserProfile = () => {
                         </div>
                         <div className="informations">
                             <span className="followers mr-3">
-                                Followers : {userData.followers.length}
+                                Followers : {userData?.followers.length}
                             </span>
                             <span className="followings mr-3">
-                                Followings : {userData.following.length}
+                                Followings : {userData?.following.length}
                             </span>
                             <span className="posts mr-3">
-                                Posts : {userData.posts.length}
+                                Posts : {userData?.posts.length}
                             </span>
                         </div>
                     </div>
 
-                    {userData.bio && (
+                    {userData?.bio && (
                         <div className="content">
-                            {userData.bio}
+                            {userData?.bio}
                         </div>
                     )}
                 </div>
@@ -117,13 +117,13 @@ const UserProfile = () => {
                                                     <div className="media-left">
                                                         <figure className="image is-48x48">
                                                             <img
-                                                                src={userData.profilePhoto}
+                                                                src={userData?.profilePhoto}
                                                                 alt="user image"
                                                             />
                                                         </figure>
                                                     </div>
                                                     <div className="media-content">
-                                                        <p className="title is-4">{userData.firstName} {userData.lastName}</p>
+                                                        <p className="title is-4">{userData?.firstName} {userData?.lastName}</p>
                                                         <p className="subtitle is-6">{moment(post.createdAt).format('YYYY/MM/DD')}</p>
                                                     </div>
                                                 </div>

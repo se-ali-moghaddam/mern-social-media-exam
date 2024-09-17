@@ -8,7 +8,7 @@ const CategoryList = () => {
 
     useEffect(() => {
         getCategories();
-    }, []);
+    });
 
     return (
         <div className="columns is-justify-content-center mt-2">

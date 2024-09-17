@@ -8,8 +8,7 @@ const Users = () => {
 
     useEffect(() => {
         getUsers();
-        console.log(users);
-    }, []);
+    });
 
     return (
         <div className='container'>

@@ -1,0 +1,19 @@
+.dropdown-menu {
+    margin-left: -300%;
+}
+
+.dropdown-content {
+    padding: 10px;
+}
+
+@media screen and (max-width: 650px) {
+    .navbar-item .buttons {
+        padding: 5px;
+        background-color: #2E333D;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+}

@@ -59,7 +59,7 @@ export const PostContextProvider = ({ children }) => {
                     authorization: `Bearer ${accessToken}`
                 }
             });
-
+            
             setPosts(res.data);
         } catch (error) {
             console.log(error);

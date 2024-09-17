@@ -1,5 +1,5 @@
 import express from "express";
-import { getTopUsers, getUsers, userAcconutVerification, userBlock, userDelete, userDetails, userFollow, userForgetPassword, userLogin, userLogout, userPasswordUpdate, userProfile, userRegister, userResetPassword, userSendEmailMsg, userSendEmailVerification, userUnblock, userUnfollow, userUpdate, userUploadProfilePhoto } from "../controllers/user/UserController.js";
+import { checkEmailExistance, checkIsFollowed, getTopUsers, getUsers, userAcconutVerification, userBlock, userDelete, userDetails, userFollow, userForgetPassword, userLogin, userLogout, userPasswordUpdate, userProfile, userRegister, userResetPassword, userSendEmailMsg, userSendEmailVerification, userUnblock, userUnfollow, userUpdate, userUploadProfilePhoto } from "../controllers/user/UserController.js";
 import { verifyToken } from "../middleware/token/TokenVerification.js";
 import { profileImageResize, photoUpload } from "../middleware/upload/photoUpload.js";
 import { refreshToken } from "../controllers/refreshToken/RefreshTokenController.js";
@@ -10,6 +10,8 @@ router.get('/api/token', refreshToken);
 
 router.get('/api/users/', verifyToken, getUsers);
 router.get('/api/top-users/', verifyToken, getTopUsers);
+router.get('/api/users/isfollowed/:followingId', verifyToken, checkIsFollowed);
+router.get('/api/users/check-email/:email', checkEmailExistance);
 router.get('/api/users/:id/', verifyToken, userDetails);
 router.get('/api/users/profile/:id/', verifyToken, userProfile);
 

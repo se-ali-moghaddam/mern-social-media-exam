@@ -18,21 +18,20 @@ const LoginForm = () => {
             email: '',
             password: ''
         },
-        onSubmit: (vlaues) => {
-            login(vlaues);
+        onSubmit: (values) => {
+            login(values);
         },
         validationSchema: formSchema
     });
 
     return (
         <form className="form" onSubmit={formik.handleSubmit}>
-            <h1 className='has-text-danger is-size-5 has-text-centered mb-4'>{loginError}</h1>
-
             <div className="field">
                 <label className="label">Email</label>
-                <div className="control has-icons-left has-icons-right">
+                <div className="control">
                     <input
-                        className="input is-danger"
+                        className={`input ${formik.touched.email && formik.errors.email 
+                            ? 'is-danger' : !formik.errors.email ? 'is-success' : ''}`}
                         name="email"
                         type="email"
                         placeholder="Email input"
@@ -40,12 +39,6 @@ const LoginForm = () => {
                         onChange={formik.handleChange("email")}
                         onBlur={formik.handleBlur("email")}
                     />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                    </span>
-                    <span className="icon is-small is-right">
-                        <i className="fas fa-exclamation-triangle"></i>
-                    </span>
                 </div>
                 <p className="help is-danger">{formik.touched.email && formik.errors.email}</p>
                 <p className="help is-danger">{loginError}</p>
@@ -53,9 +46,10 @@ const LoginForm = () => {
 
             <div className="field">
                 <label className="label">Password</label>
-                <div className="control has-icons-left has-icons-right">
+                <div className="control">
                     <input
-                        className="input"
+                        className={`input ${formik.touched.password && formik.errors.password 
+                            ? 'is-danger' : !formik.errors.password ? 'is-success' : ''}`}
                         name="password"
                         type="password"
                         placeholder="Password"
@@ -63,12 +57,6 @@ const LoginForm = () => {
                         onChange={formik.handleChange("password")}
                         onBlur={formik.handleBlur("password")}
                     />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-user"></i>
-                    </span>
-                    <span className="icon is-small is-right">
-                        <i className="fas fa-check"></i>
-                    </span>
                 </div>
                 <p className="help is-danger">{formik.touched.password && formik.errors.password}</p>
             </div>
@@ -81,7 +69,9 @@ const LoginForm = () => {
                 </div>
             </div>
 
-            <input type="submit" className="is-12 button is-link" value="Login" />
+            <div className='field mt-6 pt-6'>
+                <input type="submit" className="button is-info is-fullwidth" value="Login" />
+            </div>
         </form>
     )
 }
