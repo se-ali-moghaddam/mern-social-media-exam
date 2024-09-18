@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import { baseUrl } from "../utils/BaseUrl";
-import { toast } from "react-toastify";
+import { showToast } from "../utils/ShowToast";
 import { useNavigate } from "react-router-dom";
 
 export const PostContext = createContext();
@@ -28,27 +28,13 @@ export const PostContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             navigate('/');
         } catch (error) {
             console.log(error);
 
-            toast(error.response.data.message, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(error.response.data.message);
         }
     }
 
@@ -102,14 +88,7 @@ export const PostContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             navigate(`/details-post/${data.id}`);
         } catch (error) {
@@ -125,14 +104,7 @@ export const PostContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             navigate('/');
         } catch (error) {

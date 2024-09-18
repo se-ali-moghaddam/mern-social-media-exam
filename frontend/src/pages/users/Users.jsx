@@ -4,11 +4,11 @@ import Navbar from '../../components/navbar/Navbar'
 import { AuthContext } from '../../context/AuthContext'
 
 const Users = () => {
-    const { getUsers, users, blockUser, unblockUser } = useContext(AuthContext);
+    const { getUsers, users, blockUser, unblockUser, userId } = useContext(AuthContext);
 
     useEffect(() => {
         getUsers();
-    });
+    }, [userId]);
 
     return (
         <div className='container'>

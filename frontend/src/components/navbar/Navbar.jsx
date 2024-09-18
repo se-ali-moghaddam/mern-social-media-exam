@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext';
 import { AiOutlineUpload } from "react-icons/ai";
 import './navbar.css';
+import icon from '../../assets/images/icon.jpg';
 
 function Navbar() {
     const { userId, profilePhoto, userLogout, isAdmin } = useContext(AuthContext);
@@ -13,7 +14,7 @@ function Navbar() {
         <nav className="navbar" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
                 <Link className="navbar-item" to="/">
-                    <img alt="Logo" />
+                    <img src={icon} alt="Logo" />
                 </Link>
                 {
                     userId ?

@@ -12,7 +12,7 @@ const VerifyAccount = () => {
 
     return (
         <div className='pt-6 mt-6 has-text-centered'>
-            <h1 className='has-text-success is-size-1 pt-6 mt-6'>Account was successfully verfied !</h1>
+            <h1 className='has-text-success is-size-1 pt-6 mt-6'>Account successfully verfied !</h1>
             <Link to='/profile' className='button is-link'>Back to profile</Link>
         </div>
     )

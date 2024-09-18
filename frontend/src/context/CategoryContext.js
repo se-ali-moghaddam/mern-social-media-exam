@@ -1,8 +1,8 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import { baseUrl } from "../utils/BaseUrl";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "../utils/ShowToast";
 
 export const CategoryContext = createContext();
 
@@ -19,14 +19,7 @@ export const CategoryContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             getCategories();
         } catch (error) {
@@ -34,19 +27,20 @@ export const CategoryContextProvider = ({ children }) => {
         }
     }
 
-    const getCategories = async () => {
+
+    const getCategories = useCallback(async () => {
         try {
             const res = await axiosJWT.get(`${baseUrl}/api/categories`, {
                 headers: {
                     authorization: `Bearer ${accessToken}`
                 }
             });
-
             setCategories(res.data);
         } catch (error) {
             console.log(error);
         }
-    }
+    }, [axiosJWT, accessToken]);
+
 
     const updateCategory = async (data) => {
         try {
@@ -56,14 +50,7 @@ export const CategoryContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             navigate('/create-category');
         } catch (error) {
@@ -79,14 +66,7 @@ export const CategoryContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             getCategories();
         } catch (error) {

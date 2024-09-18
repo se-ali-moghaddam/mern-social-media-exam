@@ -6,6 +6,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { PostContext } from '../../context/PostContext';
 import { AuthContext } from '../../context/AuthContext';
+import ReactQuill from 'react-quill';
+import DOMPurify from 'dompurify';
 
 const formSchema = Yup.object({
     title: Yup.string().required('This filed is required').max(66, 'Too large, input vlaue is greater than 66'),
@@ -17,7 +19,7 @@ const EditPost = () => {
     const { state } = useLocation();
     const { categories, getCategories } = useContext(CategoryContext);
     const { updatePost } = useContext(PostContext);
-    const {userId} = useContext(AuthContext);
+    const { userId } = useContext(AuthContext);
 
     useEffect(() => {
         getCategories();
@@ -31,7 +33,7 @@ const EditPost = () => {
             id: state._id,
             user: userId
         },
-        onSubmit: (values) => {            
+        onSubmit: (values) => {
             updatePost(values);
         },
         validationSchema: formSchema
@@ -82,13 +84,13 @@ const EditPost = () => {
                         <div className="filed mt-5">
                             <label className='label'>Description</label>
                             <div className="control">
-                                <textarea
-                                    className='textarea'
-                                    placeholder='Post body'
-                                    defaultValue={state.description}
+                                <ReactQuill
+                                    theme='snow'
+                                    name="post-text"
+                                    defaultValue={DOMPurify.sanitize(state?.description)}
                                     onChange={formik.handleChange('description')}
                                     onBlur={formik.handleChange('description')}
-                                ></textarea>
+                                />
                             </div>
                             <p className="help is-danger">{formik.touched.description && formik.errors.description}</p>
                         </div>

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import Navbar from '../../components/navbar/Navbar';
+import Navbar from '../../../components/navbar/Navbar';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../../context/AuthContext';
 
 const formSchema = Yup.object({
     password: Yup.string().required('This filed is required').min(8, 'Too small, input vlaue is less than 8')
@@ -34,7 +34,8 @@ const ChangePassword = () => {
                             <div className="control">
                                 <input
                                     type="password"
-                                    className="input"
+                                    className={`input ${formik.touched.password && formik.errors.password 
+                                        ? 'is-danger' : !formik.errors.password ? 'is-success' : ''}`}
                                     placeholder='12345678 ...'
                                     value={formik.values.password}
                                     onChange={formik.handleChange("password")}

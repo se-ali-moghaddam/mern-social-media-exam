@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-import Navbar from '../../../components/navbar/Navbar';
-import { AuthContext } from '../../../context/AuthContext';
-import { Link, useLocation } from 'react-router-dom';
+import Navbar from '../../components/navbar/Navbar';
+import { AuthContext } from '../../context/AuthContext';
+import { useLocation } from 'react-router-dom';
 import moment from 'jalali-moment';
 import { AiFillDislike, AiFillLike, AiOutlineEye } from "react-icons/ai";
-import { PostContext } from '../../../context/PostContext';
+import { PostContext } from '../../context/PostContext';
+import DOMPurify from 'dompurify';
 
 const UserProfile = () => {
     const { state } = useLocation();
@@ -130,7 +131,10 @@ const UserProfile = () => {
 
                                                 <div className="content">
                                                     <h4>{post.title}</h4>
-                                                    {post.description}
+                                                    <p className="is-size-5"
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: DOMPurify.sanitize(post?.description)
+                                                        }}></p>
                                                 </div>
                                             </div>
                                         </div>

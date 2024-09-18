@@ -23,6 +23,7 @@ const ResetPassword = () => {
                 password: valuse.password
             }
 
+            console.log(data);
             resetPassword(data);
         },
         validationSchema: formSchema
@@ -40,7 +41,8 @@ const ResetPassword = () => {
                             <div className="control">
                                 <input
                                     type="password"
-                                    className="input"
+                                    className={`input ${formik.touched.password && formik.errors.password 
+                                        ? 'is-danger' : !formik.errors.password ? 'is-success' : ''}`}
                                     placeholder='12345678'
                                     value={formik.values.password}
                                     onChange={formik.handleChange('password')}

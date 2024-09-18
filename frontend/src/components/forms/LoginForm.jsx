@@ -41,7 +41,6 @@ const LoginForm = () => {
                     />
                 </div>
                 <p className="help is-danger">{formik.touched.email && formik.errors.email}</p>
-                <p className="help is-danger">{loginError}</p>
             </div>
 
             <div className="field">

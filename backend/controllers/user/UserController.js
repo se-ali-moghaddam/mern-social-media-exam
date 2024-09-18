@@ -328,7 +328,7 @@ export const userForgetPassword = asyncHandler(async (req, res) => {
         res.json(`An email was sent to ${user.email} , please check your email to reset your password !`);
     });
 
-    res.json('Verification email was sent successfully !');
+    res.json('Reset email was sent successfully !');
 });
 
 export const userResetPassword = asyncHandler(async (req, res) => {

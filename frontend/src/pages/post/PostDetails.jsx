@@ -25,9 +25,6 @@ const PostDetails = () => {
     return (
         <div className='container'>
             <Navbar />
-            <div className='bread-crump mt-2 pr-6 pt-6 is-flex is-align-items-center'>
-                Home <BsChevronRight className='mr-3 ml-3' /> Posts <BsChevronRight className='mr-3 ml-3' /> {singlePost?.category}
-            </div>
 
             <div className="single-post">
                 <div className="is-flex is-justify-content-space-between is-align-items-center mt-6">

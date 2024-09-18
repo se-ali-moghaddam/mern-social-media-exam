@@ -4,7 +4,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 const RootProtection = () => {
     const { userId } = useContext(AuthContext);
-    return userId ? <Outlet /> : <Navigate to='/register' replace={true} />
+    return userId ? <Outlet /> : <Navigate to='/register' />;
 }
 
 export default RootProtection

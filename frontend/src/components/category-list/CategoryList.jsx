@@ -8,7 +8,7 @@ const CategoryList = () => {
 
     useEffect(() => {
         getCategories();
-    });
+    }, [getCategories]);
 
     return (
         <div className="columns is-justify-content-center mt-2">
@@ -26,14 +26,14 @@ const CategoryList = () => {
                     <tbody>
                         {categories?.map((cat, index) => {
                             return (
-                                <tr key={cat._id}>
+                                <tr key={cat?._id}>
                                     <td>{index + 1}</td>
-                                    <td>{cat.title}</td>
+                                    <td>{cat?.title}</td>
                                     <td>{cat?.user?.firstName}</td>
-                                    <td>{moment(cat.createdAt).locale('en').format('YYYY/MM/DD')}</td>
+                                    <td>{moment(cat?.createdAt).locale('en').format('YYYY/MM/DD')}</td>
                                     <td>
                                         <Link state={cat} to={`/edit-category/`} className='button is-warning ml-4'>Edit</Link>
-                                        <button onClick={() => removeCategory(cat._id)} className='button is-danger ml-4'>Delete</button>
+                                        <button onClick={() => removeCategory(cat?._id)} className='button is-danger ml-4'>Delete</button>
                                     </td>
                                 </tr>
                             )

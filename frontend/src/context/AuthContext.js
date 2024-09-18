@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { showToast } from "../utils/ShowToast";
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/BaseUrl";
@@ -8,8 +8,6 @@ import { baseUrl } from "../utils/BaseUrl";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const [registerError, setRegisterError] = useState(undefined);
-    const [loginError, setLoginError] = useState(undefined);
     const [accessToken, setAccessToken] = useState([]);
     const [userId, setUserId] = useState(undefined);
     const [tokenExpires, setTokenExpires] = useState(undefined);
@@ -25,7 +23,7 @@ export const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         refreshToken();
-    }, []);
+    }, [userId]);
 
     const refreshToken = async () => {
         try {
@@ -33,7 +31,6 @@ export const AuthContextProvider = ({ children }) => {
             const token = response.data.accessToken;
             const decodedToken = jwtDecode(token);
 
-            console.log(decodedToken);
             setAccessToken(token);
             setUserId(decodedToken.userId);
             setUserEmail(decodedToken.userEmail);
@@ -41,10 +38,9 @@ export const AuthContextProvider = ({ children }) => {
             setTokenExpires(decodedToken.exp);
             setProfilePhoto(decodedToken.profilePhoto);
 
-            // navigate('/');
+            localStorage.setItem('userId', decodedToken.userId);
         } catch (error) {
             console.log(error);
-            // navigate('/login', { replace: true });
         }
     }
 
@@ -52,28 +48,27 @@ export const AuthContextProvider = ({ children }) => {
 
     axiosJWT.interceptors.request.use(
         async (config) => {
+
             try {
-                // بررسی انقضای توکن
                 if (tokenExpires * 1000 < new Date().getTime()) {
                     const response = await axios.get(`${baseUrl}/api/token`);
                     const token = response.data.accessToken;
                     const decodedToken = jwtDecode(token);
 
-                    // تنظیم هدر Authorization به صورت صحیح
                     config.headers = {
-                        ...config.headers, // اطمینان از حفظ هدرهای موجود
+                        ...config.headers,
                         Authorization: `Bearer ${token}`,
                     };
 
-                    // به‌روزرسانی توکن و اطلاعات کاربر
                     setAccessToken(token);
                     setUserId(decodedToken.userId);
                     setUserEmail(decodedToken.userEmail);
                     setIsAdmin(decodedToken.admin);
                     setTokenExpires(decodedToken.exp);
                     setProfilePhoto(decodedToken.profilePhoto);
+
+                    localStorage.setItem('userId', decodedToken.userId);
                 } else if (accessToken) {
-                    // در صورت معتبر بودن توکن موجود، هدرها را تنظیم کنید
                     config.headers = {
                         ...config.headers,
                         Authorization: `Bearer ${accessToken}`,
@@ -82,7 +77,6 @@ export const AuthContextProvider = ({ children }) => {
 
                 return config;
             } catch (err) {
-                // مدیریت خطا در هنگام بروزرسانی توکن
                 console.error('Error updating token:', err);
                 return Promise.reject(err);
             }
@@ -93,30 +87,29 @@ export const AuthContextProvider = ({ children }) => {
     );
 
     const checkEmailExists = async (data) => {
+
         try {
             const res = await axios.get(`${baseUrl}/api/users/check-email/${data}`);
+
+
             return res;
         } catch (error) {
+
             console.log(error);
         }
     }
 
-
     const register = async (data) => {
+
+
         try {
             const res = await axios.post(`${baseUrl}/api/users/register`, data);
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
+
         } catch (err) {
-            console.log(err.response.data.message);
-            setRegisterError(err.response.data.message);
+            console.log(err.response.data);
+            showToast(err.response.data.message);
         }
     }
 
@@ -124,23 +117,18 @@ export const AuthContextProvider = ({ children }) => {
         try {
             const res = await axios.post(`${baseUrl}/api/users/login`, data);
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
-            console.log(res.data.userViewModel);
             setUserId(res.data.userViewModel.userId);
             setProfilePhoto(res.data.userViewModel.profilePhoto);
             setIsAdmin(res.data.userViewModel.admin);
+            localStorage.setItem('userId', res.data.userViewModel.userId);
+
             navigate('/');
+            window.location.reload();
         } catch (err) {
-            console.log(err.response.data.message);
-            setLoginError(err.response.data.message);
+            console.log(err.response.data);
+            showToast(err.response.data.message);
         }
     }
 
@@ -159,6 +147,8 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     const deleteAccount = async (userId) => {
+
+
         try {
             const res = await axiosJWT.delete(`${baseUrl}/api/users/${userId}`, {
                 headers: {
@@ -166,22 +156,19 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
+
 
             navigate('/register');
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const userProfile = async (id) => {
+
+
         try {
             const res = await axiosJWT.get(`${baseUrl}/api/users/profile/${id}`, {
                 headers: {
@@ -191,7 +178,9 @@ export const AuthContextProvider = ({ children }) => {
 
             setUserData(res.data);
             checkIsFollowed(id);
+
         } catch (error) {
+
             console.log(error);
         }
     }
@@ -207,14 +196,7 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             profile();
         } catch (error) {
@@ -223,6 +205,8 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     const updateUser = async (data) => {
+
+
         try {
             const res = await axiosJWT.put(`${baseUrl}/api/users/`, data, {
                 headers: {
@@ -230,22 +214,19 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
+
 
             navigate('/profile');
         } catch (err) {
+
             console.log(err);
         }
     }
 
     const checkIsFollowed = async (id) => {
+
+
         try {
             console.log(`checkIsFollowed (front-end) : ${id}`);
             const res = await axiosJWT.get(
@@ -258,12 +239,16 @@ export const AuthContextProvider = ({ children }) => {
 
             console.log(res.data);
             setIsFollowed(res.data);
+
         } catch (error) {
+
             console.log(error);
         }
     };
 
     const follow = async (id) => {
+
+
         try {
             const res = await axiosJWT.put(`${baseUrl}/api/users/follow/`, { followingId: id }, {
                 headers: {
@@ -271,22 +256,19 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             userProfile(id);
+
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const unfollow = async (id) => {
+
+
         try {
             const res = await axiosJWT.put(`${baseUrl}/api/users/unfollow/`, { unfollowingId: id }, {
                 headers: {
@@ -294,43 +276,34 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             userProfile(id);
+
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const sendEmail = async (data) => {
         try {
+            console.log(data);
             const res = await axiosJWT.post(`${baseUrl}/api/users/email`, data, {
                 headers: {
                     authorization: `Bearer ${accessToken}`
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
         } catch (error) {
             console.log(error);
         }
     }
 
     const sendVerificationEmail = async () => {
+
+
         try {
             const res = await axiosJWT.post(`${baseUrl}/api/users/email-verification`, {
                 headers: {
@@ -338,20 +311,17 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
+
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const verifyAccount = async (token) => {
+
+
         try {
             const data = {
                 token: token
@@ -361,21 +331,18 @@ export const AuthContextProvider = ({ children }) => {
                     authorization: `Bearer ${accessToken}`
                 }
             });
+            console.log(data);
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const getUsers = async () => {
+
+
         try {
             const res = await axiosJWT.get(`${baseUrl}/api/users`, {
                 headers: {
@@ -384,12 +351,16 @@ export const AuthContextProvider = ({ children }) => {
             });
 
             setUsers(res.data);
+
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const getTopUsers = async () => {
+
+
         try {
             const res = await axiosJWT.get(`${baseUrl}/api/top-users`, {
                 headers: {
@@ -398,12 +369,15 @@ export const AuthContextProvider = ({ children }) => {
             });
 
             setTopUsers(res.data);
+
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const blockUser = async (id) => {
+
         try {
             const res = await axiosJWT.put(`${baseUrl}/api/users/block/${id}`, {
                 headers: {
@@ -411,22 +385,19 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             getUsers();
+
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const unblockUser = async (id) => {
+
+
         try {
             const res = await axiosJWT.put(`${baseUrl}/api/users/unblock/${id}`, {
                 headers: {
@@ -434,22 +405,19 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            // toast(res.data, {
-            //     position: "bottom-right",
-            //     autoClose: 5000,
-            //     hideProgressBar: false,
-            //     closeOnClick: true,
-            //     pauseOnHover: true,
-            //     theme: "dark"
-            // });
+            showToast(res.data);
 
             getUsers();
+
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const updatePassword = async (data) => {
+
+
         try {
             const res = await axiosJWT.put(`${baseUrl}/api/users/password`, data, {
                 headers: {
@@ -457,34 +425,26 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
+
 
             navigate('/');
         } catch (error) {
+
             console.log(error);
         }
     }
 
     const sendResetPasswordEmail = async (data) => {
+
+
         try {
             const res = await axios.put(`${baseUrl}/api/users/forget-password/`, data);
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+
+            showToast(res.data);
         } catch (error) {
+
             console.log(error);
         }
     }
@@ -492,15 +452,7 @@ export const AuthContextProvider = ({ children }) => {
     const resetPassword = async (data) => {
         try {
             const res = await axios.put(`${baseUrl}/api/users/reset-password/`, data);
-
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             navigate('/login');
         } catch (error) {
@@ -520,7 +472,7 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ register, registerError, checkEmailExists, login, loginError, deleteAccount, userId, profilePhoto, isAdmin, axiosJWT, accessToken, profile, userData, userEmail, userProfile, uploadProfilePhoto, updateUser, follow, unfollow, sendEmail, verifyAccount, sendVerificationEmail, getUsers, users, getTopUsers, topUsers, blockUser, unblockUser, updatePassword, userLogout, checkIsFollowed, isFollowed, sendResetPasswordEmail, resetPassword }}>
+        <AuthContext.Provider value={{ register, checkEmailExists, login, deleteAccount, userId, profilePhoto, isAdmin, axiosJWT, accessToken, profile, userData, userEmail, userProfile, uploadProfilePhoto, updateUser, follow, unfollow, sendEmail, verifyAccount, sendVerificationEmail, getUsers, users, getTopUsers, topUsers, blockUser, unblockUser, updatePassword, userLogout, checkIsFollowed, isFollowed, sendResetPasswordEmail, resetPassword }}>
             {children}
         </AuthContext.Provider>
     );

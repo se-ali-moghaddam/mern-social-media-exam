@@ -6,6 +6,7 @@ import moment from 'jalali-moment';
 import { AiFillDislike, AiFillLike, AiOutlineEye } from "react-icons/ai";
 import { PostContext } from '../../../context/PostContext';
 import { AiFillEdit } from "react-icons/ai";
+import DOMPurify from 'dompurify';
 
 const Profile = () => {
     const { profile, userData, uploadProfilePhoto, sendVerificationEmail, userId, deleteAccount } = useContext(AuthContext);
@@ -132,7 +133,9 @@ const Profile = () => {
 
                                                 <div className="content">
                                                     <h4>{post.title}</h4>
-                                                    {post.description}
+                                                    <p dangerouslySetInnerHTML={{
+                                                            __html: DOMPurify.sanitize(post?.description)
+                                                        }}></p>
                                                 </div>
                                             </div>
                                         </div>

@@ -4,13 +4,13 @@ import { PostContext } from '../../../context/PostContext';
 import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
-  const { getTopUsers, topUsers } = useContext(AuthContext);
+  const { getTopUsers, topUsers, userId } = useContext(AuthContext);
   const { getTopPosts, topPosts } = useContext(PostContext);
 
   useEffect(() => {
     getTopUsers();
     getTopPosts();
-  }, []);
+  }, [userId]);
 
   return (
     <aside className='menu'>

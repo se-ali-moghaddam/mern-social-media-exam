@@ -9,8 +9,8 @@ const formSchema = Yup.object({
 });
 
 const AddComment = () => {
-    const {submitComment} = useContext(CommentContext);
-    const {id} = useParams();
+    const { submitComment } = useContext(CommentContext);
+    const { id } = useParams();
 
     const formik = useFormik({
         initialValues: {
@@ -18,7 +18,7 @@ const AddComment = () => {
         },
         onSubmit: (values) => {
             const data = {
-                post : id,
+                post: id,
                 description: values.description
             }
 
@@ -32,7 +32,7 @@ const AddComment = () => {
             <div className="field">
                 <label className='label'>Comment</label>
                 <div className="control">
-                    <textarea 
+                    <textarea
                         className='textarea'
                         name="description"
                         placeholder='Write your comment !'

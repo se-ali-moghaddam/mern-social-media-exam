@@ -5,11 +5,11 @@ import { AiFillDislike, AiFillLike, AiOutlineEye } from "react-icons/ai";
 import { Link } from 'react-router-dom';
 
 const PostList = () => {
-  const { posts, getPosts, likePost, dislikePost } = useContext(PostContext);
+  const { posts, getPosts, likePost, dislikePost, userId } = useContext(PostContext);
   
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [userId]);
 
   return (
     <div className='container'>

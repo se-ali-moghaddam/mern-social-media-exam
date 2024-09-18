@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import { baseUrl } from "../utils/BaseUrl";
-import { toast } from "react-toastify";
+import { showToast } from "../utils/ShowToast";
 import { PostContext } from "./PostContext";
 
 export const CommentContext = createContext();
@@ -18,27 +18,13 @@ export const CommentContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             postDetails(data.post);
         } catch (error) {
             console.log(error);
 
-            toast(error.response.data.message, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(error.response.data.message);
         }
     }
 
@@ -50,14 +36,7 @@ export const CommentContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             postDetails(data.post);
         } catch (error) {
@@ -73,14 +52,7 @@ export const CommentContextProvider = ({ children }) => {
                 }
             });
 
-            toast(res.data, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                theme: "dark"
-            });
+            showToast(res.data);
 
             postDetails(data.post);
         } catch (error) {

@@ -33,7 +33,8 @@ const ForgetPasswrod = () => {
                             <div className="control">
                                 <input
                                     type="email"
-                                    className="input"
+                                    className={`input ${formik.touched.email && formik.errors.email 
+                                        ? 'is-danger' : !formik.errors.email ? 'is-success' : ''}`}
                                     placeholder='example@domain.com'
                                     value={formik.values.email}
                                     onChange={formik.handleChange('email')}
